@@ -1,0 +1,402 @@
+#!/bin/bash
+
+################################################################################
+# OpenCode Skills — macOS Installer
+# 
+# This script installs opencode-skills on macOS systems and sets up
+# the necessary directories, configuration, and shell profile.
+#
+# Compatibility: macOS 10.13+ (both Intel and Apple Silicon)
+# Shell: bash/zsh
+#
+# Usage: bash install-macos.sh
+################################################################################
+
+set -e  # Exit on error
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# Paths - macOS specific
+INSTALL_DIR="${HOME}/.opencode-skills"
+CONFIG_DIR="${HOME}/Library/Application Support/opencode"
+SKILLS_DIR="${INSTALL_DIR}/skills"
+CONFIG_FILE="${CONFIG_DIR}/config.yaml"
+REPO_URL="https://github.com/opencode-skills/opencode-skills.git"
+
+# Detect macOS version
+MACOS_VERSION=$(sw_vers -productVersion)
+MACOS_MAJOR=$(echo "$MACOS_VERSION" | cut -d. -f1)
+MACOS_MINOR=$(echo "$MACOS_VERSION" | cut -d. -f2)
+
+# Detect architecture
+ARCH=$(uname -m)
+if [ "$ARCH" = "arm64" ]; then
+    ARCH_NAME="Apple Silicon"
+    HOMEBREW_PATH="/opt/homebrew/bin"
+else
+    ARCH_NAME="Intel"
+    HOMEBREW_PATH="/usr/local/bin"
+fi
+
+################################################################################
+# FUNCTIONS
+################################################################################
+
+print_header() {
+    echo ""
+    echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo -e "${BLUE}  OpenCode Skills — macOS Installation${NC}"
+    echo -e "${BLUE}  macOS ${MACOS_VERSION} (${ARCH_NAME})${NC}"
+    echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo ""
+}
+
+print_step() {
+    echo -e "${YELLOW}→${NC} $1"
+}
+
+print_success() {
+    echo -e "${GREEN}✓${NC} $1"
+}
+
+print_error() {
+    echo -e "${RED}✗${NC} $1"
+}
+
+print_info() {
+    echo -e "${BLUE}ℹ${NC} $1"
+}
+
+check_macos_version() {
+    print_step "Checking macOS version..."
+    
+    if [ "$MACOS_MAJOR" -lt 10 ] || ([ "$MACOS_MAJOR" -eq 10 ] && [ "$MACOS_MINOR" -lt 13 ]); then
+        print_error "macOS 10.13 or higher required (you have $MACOS_VERSION)"
+        exit 1
+    fi
+    
+    print_success "macOS $MACOS_VERSION compatible"
+}
+
+check_xcode_cli_tools() {
+    print_step "Checking Xcode Command Line Tools..."
+    
+    if ! command -v git &> /dev/null; then
+        print_error "Xcode Command Line Tools not installed"
+        echo ""
+        echo "Install them with:"
+        echo "  xcode-select --install"
+        echo ""
+        echo "Then re-run this script."
+        exit 1
+    else
+        XCODE_VERSION=$(git --version | cut -d' ' -f3)
+        print_success "Git found (version $XCODE_VERSION)"
+    fi
+}
+
+check_homebrew() {
+    print_step "Checking Homebrew..."
+    
+    if ! command -v brew &> /dev/null; then
+        print_error "Homebrew not installed"
+        echo ""
+        echo "Install Homebrew with:"
+        echo "  /bin/bash -c \"\$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\""
+        echo ""
+        echo "Then re-run this script."
+        exit 1
+    else
+        BREW_VERSION=$(brew --version | head -n1)
+        print_success "$BREW_VERSION"
+    fi
+}
+
+check_dependencies() {
+    print_step "Checking dependencies..."
+    
+    local missing=0
+    
+    # Check curl
+    if ! command -v curl &> /dev/null; then
+        print_error "curl is not installed"
+        missing=1
+    else
+        print_success "curl found"
+    fi
+    
+    # Check git
+    if ! command -v git &> /dev/null; then
+        print_error "git is not installed"
+        missing=1
+    else
+        print_success "git found"
+    fi
+    
+    if [ $missing -eq 1 ]; then
+        echo ""
+        print_error "Missing dependencies. Install with Homebrew:"
+        echo "  brew install git curl"
+        exit 1
+    fi
+}
+
+create_directories() {
+    print_step "Creating directories..."
+    
+    mkdir -p "${INSTALL_DIR}"
+    mkdir -p "${CONFIG_DIR}"
+    mkdir -p "${SKILLS_DIR}"
+    
+    print_success "Directories created"
+}
+
+clone_repository() {
+    print_step "Cloning opencode-skills repository..."
+    
+    if [ -d "${INSTALL_DIR}/.git" ]; then
+        print_info "Repository already exists, updating..."
+        cd "${INSTALL_DIR}"
+        git pull origin main 2>/dev/null || true
+        cd - > /dev/null
+    else
+        git clone "${REPO_URL}" "${INSTALL_DIR}" 2>/dev/null || {
+            print_error "Failed to clone repository"
+            echo "Make sure you have internet access and git is configured."
+            exit 1
+        }
+    fi
+    
+    print_success "Repository ready at ${INSTALL_DIR}"
+}
+
+setup_config() {
+    print_step "Setting up configuration..."
+    
+    # Create config file if it doesn't exist
+    if [ ! -f "${CONFIG_FILE}" ]; then
+        cat > "${CONFIG_FILE}" << 'EOF'
+# OpenCode Skills Configuration
+# Generated by install-macos.sh
+
+# Default model provider (free, paid, or local)
+# Options: ollama, google-ai, groq, mistral, cohere, anthropic, openai
+default_provider: "google-ai"
+
+# Default model for each provider
+models:
+  ollama: "llama2"
+  google_ai: "gemini-pro"
+  groq: "mixtral-8x7b-32768"
+  mistral: "mistral-large-latest"
+  cohere: "command-r-plus"
+  anthropic: "claude-3-sonnet-20240229"
+  openai: "gpt-4-turbo-preview"
+
+# Default agent
+default_agent: "claude"
+
+# API Keys (set these via environment variables)
+# export ANTHROPIC_API_KEY="your-key-here"
+# export OPENAI_API_KEY="your-key-here"
+# export GOOGLE_API_KEY="your-key-here"
+# export GROQ_API_KEY="your-key-here"
+# export MISTRAL_API_KEY="your-key-here"
+# export COHERE_API_KEY="your-key-here"
+
+# Skills directory
+skills_path: "${INSTALL_DIR}/skills"
+
+# Output directory
+output_path: "./output"
+
+# Logging level (debug, info, warn, error)
+log_level: "info"
+EOF
+        print_success "Configuration created at ${CONFIG_FILE}"
+    else
+        print_info "Configuration file already exists"
+    fi
+}
+
+setup_shell_config() {
+    print_step "Configuring shell environment..."
+    
+    # Detect current shell
+    CURRENT_SHELL=$(basename "$SHELL")
+    
+    # Set up for zsh (default on macOS Catalina+)
+    if [ "$CURRENT_SHELL" = "zsh" ]; then
+        SHELL_RC="${HOME}/.zshrc"
+        SHELL_PROFILE="${HOME}/.zprofile"
+        print_info "Using zsh"
+    else
+        SHELL_RC="${HOME}/.bash_profile"
+        SHELL_PROFILE="${HOME}/.bash_profile"
+        print_info "Using bash"
+    fi
+    
+    # Create shell config if it doesn't exist
+    touch "$SHELL_RC"
+    
+    # Add to PATH and environment if not already there
+    if ! grep -q "opencode-skills" "$SHELL_RC" 2>/dev/null; then
+        cat >> "$SHELL_RC" << EOF
+
+# OpenCode Skills Configuration
+export OPENCODE_HOME="${INSTALL_DIR}"
+export OPENCODE_CONFIG="${CONFIG_FILE}"
+export PATH="\${OPENCODE_HOME}/bin:\${PATH}"
+
+# Alias for quick access
+alias opencode='python3 \${OPENCODE_HOME}/cli.py'
+EOF
+        print_success "Shell configuration updated ($SHELL_RC)"
+        print_info "Run: source $SHELL_RC"
+    else
+        print_info "Shell configuration already updated"
+    fi
+}
+
+install_starter_skills() {
+    print_step "Installing starter skills..."
+    
+    # These will be pulled from the repo
+    local starter_skills=(
+        "explain-concept"
+        "readme-writer"
+        "code-review"
+    )
+    
+    for skill in "${starter_skills[@]}"; do
+        if [ -d "${INSTALL_DIR}/skills/${skill}" ]; then
+            print_success "Starter skill: ${skill}"
+        fi
+    done
+}
+
+verify_installation() {
+    print_step "Verifying installation..."
+    
+    local errors=0
+    
+    # Check directories
+    if [ ! -d "${INSTALL_DIR}" ]; then
+        print_error "Installation directory not found"
+        errors=$((errors + 1))
+    else
+        print_success "Installation directory exists"
+    fi
+    
+    if [ ! -d "${SKILLS_DIR}" ]; then
+        print_error "Skills directory not found"
+        errors=$((errors + 1))
+    else
+        print_success "Skills directory exists"
+    fi
+    
+    if [ ! -f "${CONFIG_FILE}" ]; then
+        print_error "Configuration file not found"
+        errors=$((errors + 1))
+    else
+        print_success "Configuration file exists"
+    fi
+    
+    # Check for git repo
+    if [ ! -d "${INSTALL_DIR}/.git" ]; then
+        print_error "Git repository not found"
+        errors=$((errors + 1))
+    else
+        print_success "Git repository initialized"
+    fi
+    
+    if [ $errors -gt 0 ]; then
+        print_error "Installation verification failed"
+        exit 1
+    fi
+}
+
+print_summary() {
+    echo ""
+    echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo -e "${GREEN}✓ Installation Complete!${NC}"
+    echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo ""
+    echo "📁 Installation paths:"
+    echo "   Install dir:  ${INSTALL_DIR}"
+    echo "   Skills dir:   ${SKILLS_DIR}"
+    echo "   Config file:  ${CONFIG_FILE}"
+    echo ""
+    echo "🔧 Next steps:"
+    echo "   1. Reload your shell: source ~/.zshrc  (or ~/.bash_profile for bash)"
+    echo "   2. Set up your API keys in ${CONFIG_FILE}"
+    echo "   3. Try a skill: opencode explain-concept"
+    echo ""
+    echo "📚 Learn more:"
+    echo "   Documentation:  ${INSTALL_DIR}/README.md"
+    echo "   Quick Start:    ${INSTALL_DIR}/QUICK-START.md"
+    echo "   Skills Guide:   ${INSTALL_DIR}/SKILLS-GUIDE.md"
+    echo ""
+    echo "💡 Tip for M1/M2 Mac users:"
+    echo "   Some tools may need native ARM64 versions."
+    echo "   Check tool documentation if issues arise."
+    echo ""
+    echo "🚀 Ready to get started!"
+    echo ""
+}
+
+handle_error() {
+    echo ""
+    print_error "Installation failed at step: $1"
+    echo "Please check the error messages above and try again."
+    exit 1
+}
+
+################################################################################
+# MAIN INSTALLATION FLOW
+################################################################################
+
+main() {
+    print_header
+    
+    # Run installation steps
+    check_macos_version || handle_error "macOS version check"
+    echo ""
+    
+    check_xcode_cli_tools || handle_error "Xcode Command Line Tools check"
+    echo ""
+    
+    check_homebrew || handle_error "Homebrew check"
+    echo ""
+    
+    check_dependencies || handle_error "Dependencies check"
+    echo ""
+    
+    create_directories || handle_error "Create directories"
+    echo ""
+    
+    clone_repository || handle_error "Clone repository"
+    echo ""
+    
+    setup_config || handle_error "Setup configuration"
+    echo ""
+    
+    setup_shell_config || handle_error "Setup shell configuration"
+    echo ""
+    
+    install_starter_skills || handle_error "Install starter skills"
+    echo ""
+    
+    verify_installation || handle_error "Verify installation"
+    echo ""
+    
+    print_summary
+}
+
+# Run main function
+main "$@"
