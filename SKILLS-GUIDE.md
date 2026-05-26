@@ -4,7 +4,7 @@ Welcome to the **Skills Guide**. This document helps you find the right skill fo
 
 ---
 
-## 📍 Quick Navigation
+## Quick Navigation
 
 - **[Browse by Category](#browse-by-category)** — Security, Development, Writing, Data, DevOps, Learning
 - **[Find Skills by Task](#find-skills-by-task)** — What do you want to do?
@@ -16,7 +16,7 @@ Welcome to the **Skills Guide**. This document helps you find the right skill fo
 
 ## Browse by Category
 
-### 🔴 **Security**
+### **Security**
 
 | Skill | What It Does | Best For | Complexity |
 |-------|-----------|----------|-----------|
@@ -30,7 +30,7 @@ Welcome to the **Skills Guide**. This document helps you find the right skill fo
 
 ---
 
-### 💻 **Development**
+### **Development**
 
 | Skill | What It Does | Best For | Complexity |
 |-------|-----------|----------|-----------|
@@ -44,7 +44,7 @@ Welcome to the **Skills Guide**. This document helps you find the right skill fo
 
 ---
 
-### ✍️ **Writing & Documentation**
+### **Writing & Documentation**
 
 | Skill | What It Does | Best For | Complexity |
 |-------|-----------|----------|-----------|
@@ -58,7 +58,7 @@ Welcome to the **Skills Guide**. This document helps you find the right skill fo
 
 ---
 
-### 📊 **Data & Analysis**
+### **Data & Analysis**
 
 | Skill | What It Does | Best For | Complexity |
 |-------|-----------|----------|-----------|
@@ -72,7 +72,7 @@ Welcome to the **Skills Guide**. This document helps you find the right skill fo
 
 ---
 
-### 🔧 **DevOps & Infrastructure**
+### **DevOps & Infrastructure**
 
 | Skill | What It Does | Best For | Complexity |
 |-------|-----------|----------|-----------|
@@ -86,7 +86,7 @@ Welcome to the **Skills Guide**. This document helps you find the right skill fo
 
 ---
 
-### 🧠 **Learning & Study**
+### **Learning & Study**
 
 | Skill | What It Does | Best For | Complexity |
 |-------|-----------|----------|-----------|
@@ -101,7 +101,7 @@ Welcome to the **Skills Guide**. This document helps you find the right skill fo
 
 ## Find Skills by Task
 
-### ⚡ **Quick Answers** (< 5 minutes)
+### **Quick Answers** (< 5 minutes)
 
 | Task | Recommended Skills | Why |
 |------|-------------------|-----|
@@ -111,7 +111,7 @@ Welcome to the **Skills Guide**. This document helps you find the right skill fo
 | Improve documentation | **editing** | Polish existing content |
 | Find API issues | **api-design** | Design review catches mismatches |
 
-### 🔄 **Workflow Tasks** (1–2 hours)
+### **Workflow Tasks** (1–2 hours)
 
 | Task | Recommended Skills | Why |
 |------|-------------------|-----|
@@ -121,7 +121,7 @@ Welcome to the **Skills Guide**. This document helps you find the right skill fo
 | Refactor a module | **refactoring** + **testing-strategy** | Improve code + ensure quality |
 | Write API docs | **technical-writing** + **docstring-writer** | Complete external + internal docs |
 
-### 📈 **Major Projects** (multi-day)
+### **Major Projects** (multi-day)
 
 | Task | Recommended Skills | Why |
 |------|-------------------|-----|
@@ -136,7 +136,7 @@ Welcome to the **Skills Guide**. This document helps you find the right skill fo
 
 Combine 2+ skills for powerful workflows. See **docs/WORKFLOW.md** for full end-to-end examples.
 
-### 🔴 Security Assessment Workflow
+### Security Assessment Workflow
 ```
 threat-analysis
     ↓
@@ -150,7 +150,7 @@ vulnerability-scanner (verify)
 
 ---
 
-### 💻 Code Quality Workflow
+### Code Quality Workflow
 ```
 code-review
     ↓
@@ -164,7 +164,7 @@ docstring-writer (document changes)
 
 ---
 
-### ✍️ Documentation Overhaul
+### Documentation Overhaul
 ```
 readme-writer
     ↓
@@ -178,7 +178,7 @@ changelog-generator
 
 ---
 
-### 📊 Data Pipeline
+### Data Pipeline
 ```
 data-explorer
     ↓
@@ -194,7 +194,7 @@ statistical-analysis
 
 ---
 
-### 🔧 Deployment Workflow
+### Deployment Workflow
 ```
 docker-maestro
     ↓
@@ -210,7 +210,7 @@ system-hardening
 
 ---
 
-### 🧠 Learning & Interview Prep
+### Learning & Interview Prep
 ```
 explain-concept
     ↓
@@ -228,7 +228,7 @@ quiz-generator (self-test)
 
 Follow these structured journeys based on your role or goal.
 
-### 👨‍💻 **Full-Stack Developer**
+### **Full-Stack Developer**
 
 1. **Foundation** (Weeks 1–2)
    - `explain-concept` — Understand core concepts
@@ -251,7 +251,7 @@ Follow these structured journeys based on your role or goal.
 
 ---
 
-### 🛡️ **Security Professional**
+### **Security Professional**
 
 1. **Fundamentals** (Weeks 1–2)
    - `explain-concept` — Learn security principles
@@ -273,7 +273,7 @@ Follow these structured journeys based on your role or goal.
 
 ---
 
-### 📈 **Data Analyst / Scientist**
+### **Data Analyst / Scientist**
 
 1. **Foundation** (Weeks 1–2)
    - `explain-concept` — Statistics basics
@@ -294,7 +294,7 @@ Follow these structured journeys based on your role or goal.
 
 ---
 
-### 🎓 **Student / Learner**
+### **Student / Learner**
 
 1. **Build Foundations** (Weeks 1–3)
    - `explain-concept` — Learn new topics
@@ -312,7 +312,7 @@ Follow these structured journeys based on your role or goal.
 
 ## Skill Complexity Map
 
-```
+
 | LOW | MEDIUM | HIGH |
 |-----|--------|------|
 | readme-writer | code-review | penetration-testing |
@@ -328,7 +328,7 @@ Follow these structured journeys based on your role or goal.
 | | access-control | |
 | | system-hardening | |
 
-```
+
 
 **Pick Based on Your Confidence:**
 - **Starting out?** Green circle (LOW) — quick wins, build momentum
@@ -396,21 +396,14 @@ A: Most people get productive in 1–2 hours. True mastery (combining with other
 
 **Quick lookup: Skill → Category → Complexity**
 
-| 🔴 Security | 💻 Development | ✍️ Writing | 📊 Data |
-|---|---|---|---|
-| Penetration Testing (M-H) | Code Review (L-M) | README Writer (L) | Data Explorer (L) |
-| Threat Analysis (M-H) | Debugging (M) | Technical Writing (L-M) | SQL Optimizer (M) |
-| Access Control (M) | Refactoring (M-H) | Editing (L) | Visualization (M) |
-| Vulnerability Scanner (L-M) | API Design (M) | Changelog Generator (L) | Data Cleaning (M) |
-| | Testing Strategy (M) | Docstring Writer (L-M) | Statistical Analysis (M-H) |
+| Security | Development | Writing | Data | DevOps | Learning |
+|---|---|---|---|---|---|
+| Penetration Testing (M-H) | Code Review (L-M) | README Writer (L) | Data Explorer (L) | Docker Maestro (M) | Explain Concept (L) |
+| Threat Analysis (M-H) | Debugging (M) | Technical Writing (L-M) | SQL Optimizer (M) | Kubernetes Config (M-H) | Quiz Generator (L-M) |
+| Access Control (M) | Refactoring (M-H) | Editing (L) | Visualization (M) | CI/CD Pipeline (M) | Interview Prep (M-H) |
+| Vulnerability Scanner (L-M) | API Design (M) | Changelog Generator (L) | Data Cleaning (M) | System Hardening (M-H) | Research Synthesis (M) |
+| | Testing Strategy (M) | Docstring Writer (L-M) | Statistical Analysis (M-H) | Monitoring Setup (M) | |
 
-| 🔧 DevOps | 🧠 Learning |
-|---|---|
-| Docker Maestro (M) | Explain Concept (L) |
-| Kubernetes Config (M-H) | Quiz Generator (L-M) |
-| CI/CD Pipeline (M) | Interview Prep (M-H) |
-| System Hardening (M-H) | Research Synthesis (M) |
-| Monitoring Setup (M) | |
 
 ---
 
