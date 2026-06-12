@@ -29,6 +29,8 @@ curl -fsSL https://opencode.sh/install.sh | bash
 brew install opencode
 
 # Windows (PowerShell as Admin)
+npm install -g opencode-ai
+
 # Download from https://opencode.sh
 ```
 
